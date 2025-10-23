@@ -226,20 +226,46 @@
         };
 
         const PredictiveMaintenanceROICalculator = () => {
+          // Default values
+          const DEFAULT_VALUES = {
+            totalPumps: 1000,
+            argosPricePerPump: 2500,
+            detectionPercentage: 70,
+            regularFailureRate: 8,
+            regularCostPerFailure: 10000,
+            bottleneckFailureRate: 12,
+            bottleneckCostPerFailure: 50000,
+            batchFailureRate: 10,
+            batchCostPerFailure: 150000
+          };
+
           // Global parameters
-          const [totalPumps, setTotalPumps] = useState(1000);
-          const [argosPricePerPump, setArgosPricePerPump] = useState(2500);
-          const [detectionPercentage, setDetectionPercentage] = useState(70);
+          const [totalPumps, setTotalPumps] = useState(DEFAULT_VALUES.totalPumps);
+          const [argosPricePerPump, setArgosPricePerPump] = useState(DEFAULT_VALUES.argosPricePerPump);
+          const [detectionPercentage, setDetectionPercentage] = useState(DEFAULT_VALUES.detectionPercentage);
 
           // Equipment segment parameters
-          const [regularFailureRate, setRegularFailureRate] = useState(8);
-          const [regularCostPerFailure, setRegularCostPerFailure] = useState(10000);
+          const [regularFailureRate, setRegularFailureRate] = useState(DEFAULT_VALUES.regularFailureRate);
+          const [regularCostPerFailure, setRegularCostPerFailure] = useState(DEFAULT_VALUES.regularCostPerFailure);
 
-          const [bottleneckFailureRate, setBottleneckFailureRate] = useState(12);
-          const [bottleneckCostPerFailure, setBottleneckCostPerFailure] = useState(50000);
+          const [bottleneckFailureRate, setBottleneckFailureRate] = useState(DEFAULT_VALUES.bottleneckFailureRate);
+          const [bottleneckCostPerFailure, setBottleneckCostPerFailure] = useState(DEFAULT_VALUES.bottleneckCostPerFailure);
 
-          const [batchFailureRate, setBatchFailureRate] = useState(10);
-          const [batchCostPerFailure, setBatchCostPerFailure] = useState(150000);
+          const [batchFailureRate, setBatchFailureRate] = useState(DEFAULT_VALUES.batchFailureRate);
+          const [batchCostPerFailure, setBatchCostPerFailure] = useState(DEFAULT_VALUES.batchCostPerFailure);
+
+          // Reset function
+          const handleReset = () => {
+            setTotalPumps(DEFAULT_VALUES.totalPumps);
+            setArgosPricePerPump(DEFAULT_VALUES.argosPricePerPump);
+            setDetectionPercentage(DEFAULT_VALUES.detectionPercentage);
+            setRegularFailureRate(DEFAULT_VALUES.regularFailureRate);
+            setRegularCostPerFailure(DEFAULT_VALUES.regularCostPerFailure);
+            setBottleneckFailureRate(DEFAULT_VALUES.bottleneckFailureRate);
+            setBottleneckCostPerFailure(DEFAULT_VALUES.bottleneckCostPerFailure);
+            setBatchFailureRate(DEFAULT_VALUES.batchFailureRate);
+            setBatchCostPerFailure(DEFAULT_VALUES.batchCostPerFailure);
+          };
 
           // Equipment distributions
           const REGULAR_DIST = 0.60;
@@ -336,8 +362,18 @@
                   </div>
                 </div>
 
-                {/* Company Logo at Bottom - Removed */}
-                {/* <CompanyLogo /> */}
+                {/* Reset Button at Bottom */}
+                <div className="mt-6">
+                  <button
+                    onClick={handleReset}
+                    className="w-full py-3 px-4 font-bold text-white rounded-lg shadow-lg transition-all duration-200 hover:shadow-xl"
+                    style={{ backgroundColor: '#FF5800', ':hover': { backgroundColor: '#E04E00' } }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#E04E00'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#FF5800'}
+                  >
+                    Reset to Default Values
+                  </button>
+                </div>
               </div>
 
               {/* Right Panel - Equipment Categories */}
