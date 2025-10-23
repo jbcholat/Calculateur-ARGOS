@@ -1,0 +1,405 @@
+import React, { useState, useMemo } from 'react';
+
+// FIX #1: Move input components OUTSIDE main component to prevent focus loss
+const TextInputComponent = ({ label, value, onChange, min = 0, max = Infinity, unit = '', description = '' }) => {
+  const handleChange = (e) => {
+    const numValue = parseFloat(e.target.value) || 0;
+    const clampedValue = Math.max(min, Math.min(max, numValue));
+    onChange(clampedValue);
+  };
+
+  return (
+    <div className="mb-4">
+      <label className="block text-sm font-semibold text-black mb-2">
+        {label}
+      </label>
+      <div className="flex items-center space-x-2">
+        <input
+          type="number"
+          min={min}
+          max={max}
+          value={value}
+          onChange={handleChange}
+          className="flex-1 px-3 py-2 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none text-sm font-bold"
+        />
+        {unit && <span className="text-sm font-semibold text-gray-600">{unit}</span>}
+      </div>
+      {description && (
+        <p className="text-xs text-gray-600 mt-1">{description}</p>
+      )}
+    </div>
+  );
+};
+
+const CompactTextInput = ({ label, value, onChange, min = 0, max = Infinity, unit = '' }) => {
+  const handleChange = (e) => {
+    const numValue = parseFloat(e.target.value) || 0;
+    const clampedValue = Math.max(min, Math.min(max, numValue));
+    onChange(clampedValue);
+  };
+
+  return (
+    <div className="mb-2">
+      <label className="block text-xs font-semibold text-black mb-1">
+        {label}
+      </label>
+      <div className="flex items-center space-x-1">
+        <input
+          type="number"
+          min={min}
+          max={max}
+          value={value}
+          onChange={handleChange}
+          className="flex-1 px-2 py-1 border border-gray-300 rounded text-xs font-bold focus:border-orange-500 focus:outline-none"
+        />
+        {unit && <span className="text-xs font-semibold text-gray-600">{unit}</span>}
+      </div>
+    </div>
+  );
+};
+
+const BarChart = ({ totalCostPerFailure, totalCostForArgos }) => {
+  const maxValue = Math.max(totalCostPerFailure, totalCostForArgos, 1000);
+  const costFailureHeight = Math.max((totalCostPerFailure / maxValue) * 300, 40);
+  const argosCostHeight = Math.max((totalCostForArgos / maxValue) * 300, 40);
+
+  return (
+    <div className="p-6 bg-gray-50 rounded-lg h-full flex flex-col justify-between">
+      <h4 className="text-lg font-bold text-center mb-4">Cost Comparison</h4>
+
+      <div className="flex-1 flex items-end justify-center space-x-16 pb-8" style={{ minHeight: '350px' }}>
+        <div className="flex flex-col items-center justify-end h-full">
+          <div
+            className="w-32 bg-red-500 rounded-t-lg flex items-end justify-center shadow-lg"
+            style={{
+              height: `${costFailureHeight}px`,
+              maxHeight: '300px',
+              minHeight: '40px'
+            }}
+          >
+            <span className="text-white font-bold text-base pb-4 text-center">
+              {totalCostPerFailure > 10000 ? `${Math.round(totalCostPerFailure / 1000)}k` : Math.round(totalCostPerFailure)}
+            </span>
+          </div>
+          <div className="text-base mt-6 text-center font-bold max-w-32 leading-tight">
+            Total Cost per Failure
+          </div>
+        </div>
+
+        <div className="flex flex-col items-center justify-end h-full">
+          <div
+            className="w-32 bg-blue-500 rounded-t-lg flex items-end justify-center shadow-lg"
+            style={{
+              height: `${argosCostHeight}px`,
+              maxHeight: '300px',
+              minHeight: '40px'
+            }}
+          >
+            <span className="text-white font-bold text-base pb-4 text-center">
+              {totalCostForArgos > 10000 ? `${Math.round(totalCostForArgos / 1000)}k` : Math.round(totalCostForArgos)}
+            </span>
+          </div>
+          <div className="text-base mt-6 text-center font-bold max-w-32 leading-tight">
+            Total Cost for Argos
+          </div>
+        </div>
+      </div>
+
+      <div className="text-lg text-center font-bold mt-4">
+        <span className={`${totalCostPerFailure > totalCostForArgos ? 'text-green-600' : 'text-red-600'}`}>
+          Difference: €{Math.abs(totalCostPerFailure - totalCostForArgos).toLocaleString()}
+        </span>
+      </div>
+    </div>
+  );
+};
+
+const CompanyLogo = () => (
+  <div className="mt-6 flex justify-center">
+    <div className="w-32 h-32 relative">
+      <svg width="128" height="128" viewBox="0 0 400 400" className="w-full h-full">
+        <circle cx="200" cy="200" r="190" fill="none" stroke="#000000" strokeWidth="16"/>
+        <text x="200" y="100" textAnchor="middle" fontSize="32" fontFamily="Arial, sans-serif" fill="#000000">
+          Digital Services
+        </text>
+        <text x="200" y="170" textAnchor="middle" fontSize="72" fontWeight="bold" fontFamily="Arial, sans-serif" fill="#000000">
+          ARGOS
+        </text>
+        <line x1="80" y1="210" x2="320" y2="210" stroke="#FF5800" strokeWidth="8"/>
+        <text x="200" y="260" textAnchor="middle" fontSize="48" fontWeight="bold" fontFamily="Arial, sans-serif" fill="#000000">
+          BUSCH
+        </text>
+        <text x="200" y="310" textAnchor="middle" fontSize="48" fontWeight="bold" fontFamily="Arial, sans-serif" fill="#000000">
+          GROUP
+        </text>
+      </svg>
+    </div>
+  </div>
+);
+
+const EquipmentCategory = ({
+  title,
+  color,
+  distribution,
+  failureRateValue,
+  onFailureRateChange,
+  costPerFailureValue,
+  onCostPerFailureChange,
+  calculation
+}) => {
+  // FIX #3: Calculate values for Annual Cost Analysis Box
+  const netAnnualValue = calculation.savingsNumeric - calculation.totalCostForArgos;
+
+  return (
+    <div className="flex-1 mx-2 h-full flex flex-col">
+      {/* FIX #2: Reduced category block height using flex: 4 (~40% of space) */}
+      <div
+        className="p-6 rounded-lg shadow-lg mb-3 flex flex-col justify-center"
+        style={{ backgroundColor: color, flex: '4' }}
+      >
+        <h3 className="text-white font-bold text-2xl text-center mb-4">{title}</h3>
+        <div className="text-white text-xl text-center font-semibold">
+          {Math.round(distribution * 100)}% of pumps
+        </div>
+      </div>
+
+      {/* Input Parameters - flex: 2 (~20% of space) */}
+      <div
+        className="bg-white p-3 rounded-lg shadow-lg border-2 mb-3"
+        style={{ borderColor: color, flex: '2' }}
+      >
+        <h4 className="text-xs font-bold mb-2 text-gray-700">Input Parameters</h4>
+        <CompactTextInput
+          label="Failure Rate"
+          value={failureRateValue}
+          onChange={onFailureRateChange}
+          min={0}
+          max={100}
+          unit="%"
+        />
+        <CompactTextInput
+          label="Cost per Failure"
+          value={costPerFailureValue}
+          onChange={onCostPerFailureChange}
+          min={0}
+          max={1000000}
+          unit="€"
+        />
+      </div>
+
+      {/* FIX #3: NEW - Annual Cost Analysis Box - flex: 2 (~20% of space) */}
+      <div
+        className="bg-white p-3 rounded-lg shadow-lg border-2 mb-3"
+        style={{ borderColor: color, flex: '2' }}
+      >
+        <h4 className="text-xs font-bold mb-2 text-center text-gray-700">Annual Cost Analysis</h4>
+
+        <div className="space-y-1 text-xs">
+          <div className="flex justify-between">
+            <span className="text-gray-600">Annual Failure Cost:</span>
+            <span className="font-bold">€{Math.round(calculation.totalCostPerFailure).toLocaleString()}</span>
+          </div>
+
+          <div className="flex justify-between">
+            <span className="text-gray-600">Annual Service Cost:</span>
+            <span className="font-bold">€{Math.round(calculation.totalCostForArgos).toLocaleString()}</span>
+          </div>
+
+          <div className="flex justify-between border-t border-gray-300 pt-1 mt-1">
+            <span className="text-gray-600">Savings from Detection:</span>
+            <span className="font-bold text-green-600">€{parseFloat(calculation.savings).toLocaleString()}</span>
+          </div>
+
+          <div className="flex justify-between border-t-2 border-gray-400 pt-1 mt-1">
+            <span className="text-gray-700 font-semibold">Net Annual Value:</span>
+            <span className={`font-bold ${netAnnualValue >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+              €{Math.round(netAnnualValue).toLocaleString()}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* ROI Display - flex: 2 (~20% of space) */}
+      <div
+        className="p-3 rounded-lg shadow-lg text-center bg-white border-2 border-gray-200"
+        style={{ flex: '2' }}
+      >
+        <div
+          className="text-3xl font-bold"
+          style={{ color: getROITextColor(calculation.roi) }}
+        >
+          {calculation.roi}%
+        </div>
+        <div className="text-gray-600 text-sm font-semibold">ROI</div>
+      </div>
+    </div>
+  );
+};
+
+// ROI text color coding function
+const getROITextColor = (roi) => {
+  const roiValue = parseFloat(roi);
+  if (roiValue < 0) return '#CC0000'; // Red for negative
+  if (roiValue >= 0 && roiValue <= 15) return '#FF8C00'; // Orange/Yellow for low positive
+  return '#28A745'; // Green for high positive
+};
+
+const PredictiveMaintenanceROICalculator = () => {
+  // Global parameters
+  const [totalPumps, setTotalPumps] = useState(1000);
+  const [argosPricePerPump, setArgosPricePerPump] = useState(500);
+  const [detectionPercentage, setDetectionPercentage] = useState(70);
+
+  // Equipment segment parameters
+  const [regularFailureRate, setRegularFailureRate] = useState(8);
+  const [regularCostPerFailure, setRegularCostPerFailure] = useState(5000);
+
+  const [bottleneckFailureRate, setBottleneckFailureRate] = useState(12);
+  const [bottleneckCostPerFailure, setBottleneckCostPerFailure] = useState(25000);
+
+  const [batchFailureRate, setBatchFailureRate] = useState(10);
+  const [batchCostPerFailure, setBatchCostPerFailure] = useState(15000);
+
+  // Equipment distributions
+  const REGULAR_DIST = 0.60;
+  const BOTTLENECK_DIST = 0.20;
+  const BATCH_DIST = 0.20;
+
+  // ROI calculations
+  const calculations = useMemo(() => {
+    const calculateSegmentROI = (distribution, failureRate, costPerFailure) => {
+      const pumpsInSegment = totalPumps * distribution;
+      const failedPumps = pumpsInSegment * (failureRate / 100);
+      const totalCostPerFailure = failedPumps * costPerFailure;
+      const totalCostForArgos = pumpsInSegment * argosPricePerPump;
+      const avoidedFailures = failedPumps * (detectionPercentage / 100);
+      const savings = avoidedFailures * costPerFailure;
+      const roi = totalCostForArgos > 0 ? ((savings - totalCostForArgos) / totalCostForArgos) * 100 : 0;
+
+      return {
+        pumpsInSegment: Math.round(pumpsInSegment),
+        failedPumps: failedPumps.toFixed(1),
+        totalCostPerFailure,
+        totalCostForArgos,
+        savings: savings.toFixed(0),
+        savingsNumeric: savings, // Keep numeric for calculations in Annual Cost Analysis
+        roi: roi.toFixed(1)
+      };
+    };
+
+    const regular = calculateSegmentROI(REGULAR_DIST, regularFailureRate, regularCostPerFailure);
+    const bottleneck = calculateSegmentROI(BOTTLENECK_DIST, bottleneckFailureRate, bottleneckCostPerFailure);
+    const batch = calculateSegmentROI(BATCH_DIST, batchFailureRate, batchCostPerFailure);
+
+    return {
+      regular,
+      bottleneck,
+      batch
+    };
+  }, [totalPumps, argosPricePerPump, detectionPercentage, regularFailureRate, regularCostPerFailure, bottleneckFailureRate, bottleneckCostPerFailure, batchFailureRate, batchCostPerFailure]);
+
+  return (
+    <div className="w-full h-screen bg-gray-100 flex" style={{ aspectRatio: '16/9' }}>
+      {/* Left Panel - Global Controls + Logo */}
+      <div className="w-1/4 bg-white p-4 shadow-lg flex flex-col">
+        <div className="flex-1">
+          <div className="mb-4">
+            <h1 className="text-xl font-bold text-black mb-2">Predictive Maintenance</h1>
+            <h2 className="text-lg font-semibold mb-4" style={{ color: '#FF5800' }}>ROI Calculator</h2>
+          </div>
+
+          <div className="space-y-4">
+            <TextInputComponent
+              label="Total Number of Pumps"
+              value={totalPumps}
+              onChange={setTotalPumps}
+              min={0}
+              max={5000}
+            />
+
+            <TextInputComponent
+              label="Argos Price per Pump"
+              value={argosPricePerPump}
+              onChange={setArgosPricePerPump}
+              min={0}
+              max={10000}
+              unit="€"
+            />
+
+            <TextInputComponent
+              label="Detection Percentage"
+              value={detectionPercentage}
+              onChange={setDetectionPercentage}
+              min={0}
+              max={100}
+              unit="%"
+              description="Percentage of failures anticipated and eliminated"
+            />
+          </div>
+
+          {/* ROI Color Legend */}
+          <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+            <h3 className="font-bold text-sm text-black mb-2">ROI Color Guide</h3>
+            <div className="space-y-1 text-xs">
+              <div className="flex items-center">
+                <div className="w-3 h-3 rounded mr-2" style={{ backgroundColor: '#CC0000' }}></div>
+                <span>Negative ROI</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-3 h-3 rounded mr-2" style={{ backgroundColor: '#FF8C00' }}></div>
+                <span>Low ROI (0-15%)</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-3 h-3 rounded mr-2" style={{ backgroundColor: '#28A745' }}></div>
+                <span>High ROI (&gt;15%)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Company Logo at Bottom */}
+        <CompanyLogo />
+      </div>
+
+      {/* Right Panel - Equipment Categories Horizontal */}
+      <div className="w-3/4 p-4">
+        <div className="h-full flex">
+          <EquipmentCategory
+            title="Regular Tools"
+            color="#009DA5"
+            distribution={REGULAR_DIST}
+            failureRateValue={regularFailureRate}
+            onFailureRateChange={setRegularFailureRate}
+            costPerFailureValue={regularCostPerFailure}
+            onCostPerFailureChange={setRegularCostPerFailure}
+            calculation={calculations.regular}
+          />
+
+          <EquipmentCategory
+            title="Bottleneck Tools"
+            color="#CC0000"
+            distribution={BOTTLENECK_DIST}
+            failureRateValue={bottleneckFailureRate}
+            onFailureRateChange={setBottleneckFailureRate}
+            costPerFailureValue={bottleneckCostPerFailure}
+            onCostPerFailureChange={setBottleneckCostPerFailure}
+            calculation={calculations.bottleneck}
+          />
+
+          <EquipmentCategory
+            title="Batch Tools"
+            color="#FF5800"
+            distribution={BATCH_DIST}
+            failureRateValue={batchFailureRate}
+            onFailureRateChange={setBatchFailureRate}
+            costPerFailureValue={batchCostPerFailure}
+            onCostPerFailureChange={setBatchCostPerFailure}
+            calculation={calculations.batch}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default PredictiveMaintenanceROICalculator;
