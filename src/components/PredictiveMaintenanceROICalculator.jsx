@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 
 // FIX #1: Move input components OUTSIDE main component to prevent focus loss
-const TextInputComponent = ({ label, value, onChange, min = 0, max = Infinity, unit = '', description = '' }) => {
+const TextInputComponent = ({ label, value, onChange, min = 0, max = Infinity, step = 1, unit = '', description = '' }) => {
   const handleChange = (e) => {
     const numValue = parseFloat(e.target.value) || 0;
     const clampedValue = Math.max(min, Math.min(max, numValue));
@@ -18,6 +18,7 @@ const TextInputComponent = ({ label, value, onChange, min = 0, max = Infinity, u
           type="number"
           min={min}
           max={max}
+          step={step}
           value={value}
           onChange={handleChange}
           className="flex-1 px-3 py-2 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none text-sm font-bold"
@@ -31,7 +32,7 @@ const TextInputComponent = ({ label, value, onChange, min = 0, max = Infinity, u
   );
 };
 
-const CompactTextInput = ({ label, value, onChange, min = 0, max = Infinity, unit = '' }) => {
+const CompactTextInput = ({ label, value, onChange, min = 0, max = Infinity, step = 1, unit = '' }) => {
   const handleChange = (e) => {
     const numValue = parseFloat(e.target.value) || 0;
     const clampedValue = Math.max(min, Math.min(max, numValue));
@@ -48,6 +49,7 @@ const CompactTextInput = ({ label, value, onChange, min = 0, max = Infinity, uni
           type="number"
           min={min}
           max={max}
+          step={step}
           value={value}
           onChange={handleChange}
           className="flex-1 px-2 py-1 border border-gray-300 rounded text-xs font-bold focus:border-orange-500 focus:outline-none"
@@ -175,6 +177,7 @@ const EquipmentCategory = ({
           onChange={onFailureRateChange}
           min={0}
           max={100}
+          step={5}
           unit="%"
         />
         <CompactTextInput
@@ -183,6 +186,7 @@ const EquipmentCategory = ({
           onChange={onCostPerFailureChange}
           min={0}
           max={1000000}
+          step={5000}
           unit="€"
         />
       </div>
@@ -252,13 +256,13 @@ const PredictiveMaintenanceROICalculator = () => {
 
   // Equipment segment parameters
   const [regularFailureRate, setRegularFailureRate] = useState(8);
-  const [regularCostPerFailure, setRegularCostPerFailure] = useState(5000);
+  const [regularCostPerFailure, setRegularCostPerFailure] = useState(10000);
 
   const [bottleneckFailureRate, setBottleneckFailureRate] = useState(12);
-  const [bottleneckCostPerFailure, setBottleneckCostPerFailure] = useState(25000);
+  const [bottleneckCostPerFailure, setBottleneckCostPerFailure] = useState(50000);
 
   const [batchFailureRate, setBatchFailureRate] = useState(10);
-  const [batchCostPerFailure, setBatchCostPerFailure] = useState(15000);
+  const [batchCostPerFailure, setBatchCostPerFailure] = useState(150000);
 
   // Equipment distributions
   const REGULAR_DIST = 0.60;
@@ -323,6 +327,7 @@ const PredictiveMaintenanceROICalculator = () => {
               onChange={setArgosPricePerPump}
               min={0}
               max={10000}
+              step={100}
               unit="€"
             />
 
