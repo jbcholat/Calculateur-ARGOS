@@ -90,6 +90,27 @@ roi = ((savings - annualServiceCost) / annualServiceCost) × 100
 
 ## Usage
 
+### Option 1: Standalone HTML (Recommended for Tablets/Offline Use)
+
+**Perfect for client presentations on tablets or offline demos.**
+
+1. Download `index.html` from this repository
+2. Open it in any modern browser (Chrome, Safari, Firefox, Edge)
+3. Works offline after first load (requires internet connection on first use to download React/Tailwind libraries)
+
+**Features:**
+- ✅ Single file solution - no build process required
+- ✅ Works offline on tablets (iPad, Android)
+- ✅ No installation needed
+- ✅ All functionality included
+- ✅ French interface
+
+**See [GUIDE_UTILISATION.md](GUIDE_UTILISATION.md) for detailed instructions (in French)**
+
+### Option 2: React Component Integration
+
+For integration into a React application:
+
 ```jsx
 import PredictiveMaintenanceROICalculator from './src/components/PredictiveMaintenanceROICalculator';
 
@@ -127,10 +148,12 @@ function App() {
 
 ```
 Calculateur-ARGOS/
+├── index.html                              # Standalone version (offline capable)
 ├── src/
 │   └── components/
-│       └── PredictiveMaintenanceROICalculator.jsx
-└── README.md
+│       └── PredictiveMaintenanceROICalculator.jsx  # React component
+├── README.md                               # Technical documentation (English)
+└── GUIDE_UTILISATION.md                    # User guide (French)
 ```
 
 ## License
