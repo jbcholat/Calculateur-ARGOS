@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARGOS - Calculateur ROI Maintenance Prédictive (Offline)</title>
+    <title>ARGOS - Predictive Maintenance ROI Calculator (Offline)</title>
 
     <style>
         * {
@@ -444,14 +444,14 @@
               <div className={`category-block ${colorClass}`}>
                 <h3 className="category-title">{title}</h3>
                 <div className="category-percentage">
-                  {Math.round(distribution * 100)}% des pompes
+                  {Math.round(distribution * 100)}% of pumps
                 </div>
               </div>
 
               <div className={`input-parameters-box ${borderClass}`}>
-                <h4 className="box-title">Paramètres d'entrée</h4>
+                <h4 className="box-title">Input Parameters</h4>
                 <CompactTextInput
-                  label="Taux de panne"
+                  label="Failure Rate"
                   value={failureRateValue}
                   onChange={onFailureRateChange}
                   min={0}
@@ -459,7 +459,7 @@
                   unit="%"
                 />
                 <CompactTextInput
-                  label="Coût par panne"
+                  label="Cost per Failure"
                   value={costPerFailureValue}
                   onChange={onCostPerFailureChange}
                   min={0}
@@ -469,27 +469,27 @@
               </div>
 
               <div className={`cost-analysis-box ${borderClass}`}>
-                <h4 className="box-title" style={{ textAlign: 'center' }}>Analyse des coûts annuels</h4>
+                <h4 className="box-title" style={{ textAlign: 'center' }}>Annual Cost Analysis</h4>
 
                 <div className="cost-line">
-                  <span className="cost-label">Coût annuel pannes:</span>
-                  <span className="cost-value">€{Math.round(calculation.totalCostPerFailure).toLocaleString('fr-FR')}</span>
+                  <span className="cost-label">Annual Failure Cost:</span>
+                  <span className="cost-value">€{Math.round(calculation.totalCostPerFailure).toLocaleString('en-US')}</span>
                 </div>
 
                 <div className="cost-line">
-                  <span className="cost-label">Coût service annuel:</span>
-                  <span className="cost-value">€{Math.round(calculation.totalCostForArgos).toLocaleString('fr-FR')}</span>
+                  <span className="cost-label">Annual Service Cost:</span>
+                  <span className="cost-value">€{Math.round(calculation.totalCostForArgos).toLocaleString('en-US')}</span>
                 </div>
 
                 <div className="cost-line cost-line-separator">
-                  <span className="cost-label">Économies détection:</span>
-                  <span className="cost-value value-positive">€{parseFloat(calculation.savings).toLocaleString('fr-FR')}</span>
+                  <span className="cost-label">Savings from Detection:</span>
+                  <span className="cost-value value-positive">€{parseFloat(calculation.savings).toLocaleString('en-US')}</span>
                 </div>
 
                 <div className="cost-line cost-line-main">
-                  <span className="cost-label">Valeur annuelle nette:</span>
+                  <span className="cost-label">Net Annual Value:</span>
                   <span className={`cost-value ${netAnnualValue >= 0 ? 'value-positive' : 'value-negative'}`}>
-                    €{Math.round(netAnnualValue).toLocaleString('fr-FR')}
+                    €{Math.round(netAnnualValue).toLocaleString('en-US')}
                   </span>
                 </div>
               </div>
@@ -555,12 +555,12 @@
               <div className="left-panel">
                 <div className="left-panel-content">
                   <div className="title">
-                    <h1 className="main-title">Maintenance Prédictive</h1>
-                    <h2 className="subtitle">Calculateur ROI</h2>
+                    <h1 className="main-title">Predictive Maintenance</h1>
+                    <h2 className="subtitle">ROI Calculator</h2>
                   </div>
 
                   <TextInputComponent
-                    label="Nombre total de pompes"
+                    label="Total Number of Pumps"
                     value={totalPumps}
                     onChange={setTotalPumps}
                     min={0}
@@ -568,7 +568,7 @@
                   />
 
                   <TextInputComponent
-                    label="Prix Argos par pompe"
+                    label="Argos Price per Pump"
                     value={argosPricePerPump}
                     onChange={setArgosPricePerPump}
                     min={0}
@@ -577,28 +577,28 @@
                   />
 
                   <TextInputComponent
-                    label="Pourcentage de détection"
+                    label="Detection Percentage"
                     value={detectionPercentage}
                     onChange={setDetectionPercentage}
                     min={0}
                     max={100}
                     unit="%"
-                    description="Pourcentage de pannes anticipées et éliminées"
+                    description="Percentage of failures anticipated and eliminated"
                   />
 
                   <div className="legend-box">
-                    <h3 className="legend-title">Guide couleur ROI</h3>
+                    <h3 className="legend-title">ROI Color Guide</h3>
                     <div className="legend-item">
                       <div className="legend-color" style={{ backgroundColor: '#CC0000' }}></div>
-                      <span>ROI négatif</span>
+                      <span>Negative ROI</span>
                     </div>
                     <div className="legend-item">
                       <div className="legend-color" style={{ backgroundColor: '#FF8C00' }}></div>
-                      <span>ROI faible (0-15%)</span>
+                      <span>Low ROI (0-15%)</span>
                     </div>
                     <div className="legend-item">
                       <div className="legend-color" style={{ backgroundColor: '#28A745' }}></div>
-                      <span>ROI élevé (&gt;15%)</span>
+                      <span>High ROI (&gt;15%)</span>
                     </div>
                   </div>
                 </div>
@@ -608,7 +608,7 @@
 
               <div className="right-panel">
                 <EquipmentCategory
-                  title="Outils Standards"
+                  title="Regular Tools"
                   colorClass="color-regular"
                   borderClass="border-regular"
                   distribution={REGULAR_DIST}
@@ -620,7 +620,7 @@
                 />
 
                 <EquipmentCategory
-                  title="Outils Goulot"
+                  title="Bottleneck Tools"
                   colorClass="color-bottleneck"
                   borderClass="border-bottleneck"
                   distribution={BOTTLENECK_DIST}
@@ -632,7 +632,7 @@
                 />
 
                 <EquipmentCategory
-                  title="Outils Batch"
+                  title="Batch Tools"
                   colorClass="color-batch"
                   borderClass="border-batch"
                   distribution={BATCH_DIST}
