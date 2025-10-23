@@ -251,7 +251,7 @@ const getROITextColor = (roi) => {
 const PredictiveMaintenanceROICalculator = () => {
   // Global parameters
   const [totalPumps, setTotalPumps] = useState(1000);
-  const [argosPricePerPump, setArgosPricePerPump] = useState(500);
+  const [argosPricePerPump, setArgosPricePerPump] = useState(2500);
   const [detectionPercentage, setDetectionPercentage] = useState(70);
 
   // Equipment segment parameters
