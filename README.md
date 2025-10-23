@@ -103,9 +103,9 @@ roi = ((savings - annualServiceCost) / annualServiceCost) × 100
 - ✅ Works offline on tablets (iPad, Android)
 - ✅ No installation needed
 - ✅ All functionality included
-- ✅ French interface
+- ✅ English interface
 
-**See [GUIDE_UTILISATION.md](GUIDE_UTILISATION.md) for detailed instructions (in French)**
+**See [USER_GUIDE.md](USER_GUIDE.md) for detailed instructions**
 
 ### Option 2: React Component Integration
 
@@ -154,8 +154,9 @@ Calculateur-ARGOS/
 ├── src/
 │   └── components/
 │       └── PredictiveMaintenanceROICalculator.jsx  # React component for integration
-├── README.md                               # Technical documentation (English)
-└── GUIDE_UTILISATION.md                    # User guide (French)
+├── README.md                               # Technical documentation
+├── USER_GUIDE.md                           # User guide
+└── OFFLINE_SETUP.md                        # Offline setup guide
 ```
 
 ## Available Versions
@@ -178,7 +179,7 @@ Calculateur-ARGOS/
 - Create with: `./create-fully-offline-version.sh`
 - **Best for**: Completely offline environments (airplanes, submarines, remote sites)
 
-**See [GUIDE_UTILISATION.md](GUIDE_UTILISATION.md) for detailed comparison and usage instructions**
+**See [USER_GUIDE.md](USER_GUIDE.md) for detailed comparison and usage instructions**
 
 ## License
 

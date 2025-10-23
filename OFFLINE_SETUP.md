@@ -1,66 +1,66 @@
-# Configuration Offline - Guide Rapide
+# Offline Configuration - Quick Guide
 
-Ce guide explique comment créer une version 100% offline du calculateur ROI ARGOS.
+This guide explains how to create a 100% offline version of the ARGOS ROI calculator.
 
-## Méthode Rapide : Script Automatique
+## Quick Method: Automatic Script
 
-### Prérequis
-- Un ordinateur avec accès internet
-- `curl` installé (disponible par défaut sur Mac/Linux)
+### Prerequisites
+- A computer with internet access
+- `curl` installed (available by default on Mac/Linux)
 - Bash shell
 
-### Étapes
+### Steps
 
-1. **Cloner ou télécharger le repository**
+1. **Clone or download the repository**
    ```bash
    git clone https://github.com/jbcholat/Calculateur-ARGOS.git
    cd Calculateur-ARGOS
    ```
 
-2. **Exécuter le script**
+2. **Run the script**
    ```bash
    chmod +x create-fully-offline-version.sh
    ./create-fully-offline-version.sh
    ```
 
-3. **Résultat**
-   Le script crée automatiquement :
-   - `libs/` - Dossier avec les bibliothèques téléchargées
-   - `index-fully-offline.html` - Fichier HTML autonome complet
+3. **Result**
+   The script automatically creates:
+   - `libs/` - Folder with downloaded libraries
+   - `index-fully-offline.html` - Complete standalone HTML file
 
-4. **Transférer sur tablette**
-   - Copiez `index-fully-offline.html` sur votre tablette
-   - Ouvrez-le dans n'importe quel navigateur
-   - Fonctionne sans aucune connexion internet !
+4. **Transfer to tablet**
+   - Copy `index-fully-offline.html` to your tablet
+   - Open it in any browser
+   - Works without any internet connection!
 
-## Méthode Manuelle
+## Manual Method
 
-Si vous préférez tout faire manuellement :
+If you prefer to do everything manually:
 
-### 1. Télécharger les bibliothèques
+### 1. Download the libraries
 
-Téléchargez ces 3 fichiers sur votre ordinateur :
+Download these 3 files to your computer:
 
 ```bash
-# Créer le dossier
+# Create the folder
 mkdir libs
 cd libs
 
-# Télécharger React
+# Download React
 curl -o react.production.min.js https://unpkg.com/react@18/umd/react.production.min.js
 
-# Télécharger ReactDOM
+# Download ReactDOM
 curl -o react-dom.production.min.js https://unpkg.com/react-dom@18/umd/react-dom.production.min.js
 
-# Télécharger Babel
+# Download Babel
 curl -o babel.min.js https://unpkg.com/@babel/standalone/babel.min.js
 
 cd ..
 ```
 
-### 2. Modifier index-offline.html
+### 2. Modify index-offline.html
 
-Ouvrez `index-offline.html` et trouvez ces lignes (vers la ligne 366) :
+Open `index-offline.html` and find these lines (around line 366):
 
 ```html
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -68,7 +68,7 @@ Ouvrez `index-offline.html` et trouvez ces lignes (vers la ligne 366) :
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 ```
 
-Remplacez-les par :
+Replace them with:
 
 ```html
 <script src="libs/react.production.min.js"></script>
@@ -76,9 +76,9 @@ Remplacez-les par :
 <script src="libs/babel.min.js"></script>
 ```
 
-### 3. Structure finale
+### 3. Final structure
 
-Votre structure de dossier devrait ressembler à :
+Your folder structure should look like:
 
 ```
 Calculateur-ARGOS/
@@ -89,50 +89,50 @@ Calculateur-ARGOS/
     └── babel.min.js
 ```
 
-### 4. Transférer sur tablette
+### 4. Transfer to tablet
 
-Transférez **tout le dossier** (y compris `libs/`) sur votre tablette et ouvrez `index-offline.html`.
+Transfer **the entire folder** (including `libs/`) to your tablet and open `index-offline.html`.
 
-## Vérification
+## Verification
 
-Pour vérifier que tout fonctionne :
+To verify everything works:
 
-1. Activez le mode avion sur votre appareil
-2. Ouvrez le fichier HTML
-3. Si le calculateur s'affiche et fonctionne, c'est parfait ! ✅
+1. Enable airplane mode on your device
+2. Open the HTML file
+3. If the calculator displays and works, perfect! ✅
 
-## Taille des fichiers
+## File Sizes
 
-- `react.production.min.js` : ~6 KB
-- `react-dom.production.min.js` : ~130 KB
-- `babel.min.js` : ~1.3 MB
-- **Total** : ~1.4 MB
+- `react.production.min.js`: ~6 KB
+- `react-dom.production.min.js`: ~130 KB
+- `babel.min.js`: ~1.3 MB
+- **Total**: ~1.4 MB
 
-C'est très léger pour une application moderne !
+This is very light for a modern application!
 
-## Dépannage
+## Troubleshooting
 
-### Le script ne fonctionne pas
-- Vérifiez que `curl` est installé : `curl --version`
-- Vérifiez votre connexion internet
-- Essayez d'exécuter les commandes `curl` manuellement
+### The script doesn't work
+- Check that `curl` is installed: `curl --version`
+- Check your internet connection
+- Try running the `curl` commands manually
 
-### Le calculateur ne s'affiche pas
-- Vérifiez que les 3 fichiers sont dans le dossier `libs/`
-- Vérifiez que les chemins dans le HTML sont corrects
-- Ouvrez la console du navigateur (F12) pour voir les erreurs
+### The calculator doesn't display
+- Check that all 3 files are in the `libs/` folder
+- Check that the paths in the HTML are correct
+- Open the browser console (F12) to see errors
 
-### Erreur "React is not defined"
-- Le fichier `react.production.min.js` n'est pas chargé correctement
-- Vérifiez le chemin dans le HTML
+### Error "React is not defined"
+- The `react.production.min.js` file isn't loaded correctly
+- Check the path in the HTML
 
 ## Support
 
-Pour toute question :
-- Consultez le [GUIDE_UTILISATION.md](GUIDE_UTILISATION.md)
-- Ouvrez une issue sur GitHub
-- Contactez l'équipe ARGOS Digital Services
+For any questions:
+- Consult the [USER_GUIDE.md](USER_GUIDE.md)
+- Open an issue on GitHub
+- Contact the ARGOS Digital Services team
 
 ---
 
-**Note** : Cette méthode fonctionne pour toutes les plateformes (Windows, Mac, Linux, iOS, Android) et tous les navigateurs modernes (Chrome, Safari, Firefox, Edge).
+**Note**: This method works for all platforms (Windows, Mac, Linux, iOS, Android) and all modern browsers (Chrome, Safari, Firefox, Edge).
