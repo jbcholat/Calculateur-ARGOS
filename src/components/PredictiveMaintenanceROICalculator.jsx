@@ -177,7 +177,7 @@ const EquipmentCategory = ({
           onChange={onFailureRateChange}
           min={0}
           max={100}
-          step={5}
+          step={1}
           unit="%"
         />
         <CompactTextInput
@@ -319,6 +319,7 @@ const PredictiveMaintenanceROICalculator = () => {
               onChange={setTotalPumps}
               min={0}
               max={5000}
+              step={10}
             />
 
             <TextInputComponent
@@ -362,8 +363,8 @@ const PredictiveMaintenanceROICalculator = () => {
           </div>
         </div>
 
-        {/* Company Logo at Bottom */}
-        <CompanyLogo />
+        {/* Company Logo at Bottom - Removed */}
+        {/* <CompanyLogo /> */}
       </div>
 
       {/* Right Panel - Equipment Categories Horizontal */}

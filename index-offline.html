@@ -458,7 +458,7 @@
                   onChange={onFailureRateChange}
                   min={0}
                   max={100}
-                  step={5}
+                  step={1}
                   unit="%"
                 />
                 <CompactTextInput
@@ -569,6 +569,7 @@
                     onChange={setTotalPumps}
                     min={0}
                     max={5000}
+                    step={10}
                   />
 
                   <TextInputComponent
@@ -608,7 +609,7 @@
                   </div>
                 </div>
 
-                <CompanyLogo />
+                {/* <CompanyLogo /> */}
               </div>
 
               <div className="right-panel">
