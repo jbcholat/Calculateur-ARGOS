@@ -148,13 +148,37 @@ function App() {
 
 ```
 Calculateur-ARGOS/
-├── index.html                              # Standalone version (offline capable)
+├── index.html                              # Standard version (Tailwind CDN)
+├── index-offline.html                      # Optimized CSS version (lighter)
+├── create-fully-offline-version.sh         # Script to create 100% offline version
 ├── src/
 │   └── components/
-│       └── PredictiveMaintenanceROICalculator.jsx  # React component
+│       └── PredictiveMaintenanceROICalculator.jsx  # React component for integration
 ├── README.md                               # Technical documentation (English)
 └── GUIDE_UTILISATION.md                    # User guide (French)
 ```
+
+## Available Versions
+
+### 1. index.html (Standard)
+- Uses Tailwind CSS from CDN
+- Requires internet on first load
+- Works offline after caching (~30 KB)
+- **Best for**: Normal use cases
+
+### 2. index-offline.html (Optimized)
+- Custom CSS (no Tailwind dependency)
+- Only needs React from CDN (~140 KB)
+- Lighter and faster
+- **Best for**: Limited network environments
+
+### 3. index-fully-offline.html (100% Offline)
+- All libraries embedded
+- NO internet required at all (~1.4 MB)
+- Create with: `./create-fully-offline-version.sh`
+- **Best for**: Completely offline environments (airplanes, submarines, remote sites)
+
+**See [GUIDE_UTILISATION.md](GUIDE_UTILISATION.md) for detailed comparison and usage instructions**
 
 ## License
 

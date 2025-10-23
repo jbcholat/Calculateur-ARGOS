@@ -22,9 +22,55 @@
 - Après le premier chargement, ces bibliothèques sont mises en cache
 - Ensuite, vous pouvez utiliser le calculateur **complètement offline**
 
-### Méthode 2 : Version Totalement Offline (Avancée)
+### Méthode 2 : Version Totalement Offline - CSS Optimisé
 
-Si vous avez besoin d'une version qui fonctionne **sans aucune connexion internet** (même la première fois), je peux créer une version avec toutes les bibliothèques incluses localement. Dites-le moi si nécessaire.
+**Pour les environnements sans internet du tout**
+
+Utilisez le fichier `index-offline.html` qui remplace Tailwind CSS par du CSS optimisé :
+
+1. Téléchargez `index-offline.html` depuis GitHub
+2. Ouvrez-le sur votre tablette
+3. À la première ouverture, il télécharge React (très léger, ~140 KB total)
+4. Ensuite fonctionne 100% offline
+
+**Avantages** :
+- Plus léger que la version standard
+- CSS optimisé et rapide
+- Fonctionne offline après premier chargement
+
+### Méthode 3 : Version 100% Offline - Aucune Dépendance Internet
+
+**Pour utilisation sans AUCUNE connexion internet, même la première fois**
+
+#### Option A : Script Automatique (Recommandé)
+
+Si vous avez accès à un ordinateur avec internet :
+
+```bash
+# Télécharger le repository
+git clone https://github.com/jbcholat/Calculateur-ARGOS.git
+cd Calculateur-ARGOS
+
+# Exécuter le script
+./create-fully-offline-version.sh
+```
+
+Le script créera automatiquement `index-fully-offline.html` avec toutes les bibliothèques intégrées (~1.4 MB).
+
+#### Option B : Manuel
+
+1. Téléchargez `index-offline.html` depuis GitHub
+2. Téléchargez les bibliothèques suivantes :
+   - [react.production.min.js](https://unpkg.com/react@18/umd/react.production.min.js) (~6 KB)
+   - [react-dom.production.min.js](https://unpkg.com/react-dom@18/umd/react-dom.production.min.js) (~130 KB)
+   - [babel.min.js](https://unpkg.com/@babel/standalone/babel.min.js) (~1.3 MB)
+3. Créez un dossier `libs/` à côté du fichier HTML
+4. Placez les 3 fichiers téléchargés dans le dossier `libs/`
+5. Modifiez `index-offline.html` lignes 366-368 pour pointer vers `libs/`
+
+**Taille totale** : ~1.4 MB (très raisonnable pour une tablette)
+
+**Avantage** : Fonctionne même dans un avion, sous-marin, ou zone sans réseau !
 
 ---
 
@@ -159,3 +205,23 @@ Pour toute question ou problème :
 - ✅ Rééquilibrage de l'espacement vertical
 - ✅ Interface en français
 - ✅ Mode offline après première utilisation
+- ✅ Version 100% offline disponible
+
+---
+
+## Comparaison des Versions
+
+| Caractéristique | index.html | index-offline.html | index-fully-offline.html |
+|----------------|------------|-------------------|-------------------------|
+| **Connexion requise 1ère fois** | ✅ Oui | ✅ Oui (léger) | ❌ Non |
+| **Fonctionne offline après** | ✅ Oui | ✅ Oui | ✅ Oui |
+| **Taille du fichier** | ~30 KB | ~45 KB | ~1.4 MB |
+| **CSS Framework** | Tailwind CDN | CSS Inline | CSS Inline |
+| **Bibliothèques React** | CDN | CDN | Intégré |
+| **Idéal pour** | Usage normal | Réseau limité | Aucun réseau |
+| **Performance** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
+
+**Recommandation** :
+- **La plupart des cas** : Utilisez `index.html` (simple et léger)
+- **Réseau limité** : Utilisez `index-offline.html` (optimisé)
+- **Aucun internet** : Créez `index-fully-offline.html` avec le script
