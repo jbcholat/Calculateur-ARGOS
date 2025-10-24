@@ -60,6 +60,31 @@ const CompactTextInput = ({ label, value, onChange, min = 0, max = Infinity, ste
   );
 };
 
+// Compact Percentage Input for Equipment Distribution
+const CompactPercentageInput = ({ value, onChange, min = 1, max = 98 }) => {
+  const handleChange = (e) => {
+    const numValue = parseFloat(e.target.value) || 0;
+    const clampedValue = Math.max(min, Math.min(max, numValue));
+    onChange(clampedValue);
+  };
+
+  return (
+    <div className="flex items-center justify-center space-x-1">
+      <input
+        type="number"
+        min={min}
+        max={max}
+        step={1}
+        value={value}
+        onChange={handleChange}
+        className="w-16 px-2 py-1 border-2 border-white rounded text-base font-bold text-center bg-white bg-opacity-30 text-white focus:bg-opacity-50 focus:outline-none"
+        style={{ WebkitAppearance: 'none', MozAppearance: 'textfield' }}
+      />
+      <span className="text-base font-semibold text-white">% of pumps</span>
+    </div>
+  );
+};
+
 const BarChart = ({ totalCostPerFailure, totalCostForArgos }) => {
   const maxValue = Math.max(totalCostPerFailure, totalCostForArgos, 1000);
   const costFailureHeight = Math.max((totalCostPerFailure / maxValue) * 300, 40);
@@ -143,6 +168,8 @@ const EquipmentCategory = ({
   title,
   color,
   distribution,
+  distributionPercentage,
+  onDistributionChange,
   failureRateValue,
   onFailureRateChange,
   costPerFailureValue,
@@ -160,9 +187,10 @@ const EquipmentCategory = ({
         style={{ backgroundColor: color, flex: '4' }}
       >
         <h3 className="text-white font-bold text-2xl text-center mb-4">{title}</h3>
-        <div className="text-white text-xl text-center font-semibold">
-          {Math.round(distribution * 100)}% of pumps
-        </div>
+        <CompactPercentageInput
+          value={distributionPercentage}
+          onChange={onDistributionChange}
+        />
       </div>
 
       {/* Input Parameters - flex: 2 (~20% of space) */}
@@ -256,10 +284,13 @@ const PredictiveMaintenanceROICalculator = () => {
     detectionPercentage: 70,
     regularFailureRate: 8,
     regularCostPerFailure: 10000,
+    regularDistribution: 60,
     bottleneckFailureRate: 12,
     bottleneckCostPerFailure: 50000,
+    bottleneckDistribution: 20,
     batchFailureRate: 10,
-    batchCostPerFailure: 150000
+    batchCostPerFailure: 150000,
+    batchDistribution: 20
   };
 
   // Global parameters
@@ -270,12 +301,88 @@ const PredictiveMaintenanceROICalculator = () => {
   // Equipment segment parameters
   const [regularFailureRate, setRegularFailureRate] = useState(DEFAULT_VALUES.regularFailureRate);
   const [regularCostPerFailure, setRegularCostPerFailure] = useState(DEFAULT_VALUES.regularCostPerFailure);
+  const [regularDistribution, setRegularDistribution] = useState(DEFAULT_VALUES.regularDistribution);
 
   const [bottleneckFailureRate, setBottleneckFailureRate] = useState(DEFAULT_VALUES.bottleneckFailureRate);
   const [bottleneckCostPerFailure, setBottleneckCostPerFailure] = useState(DEFAULT_VALUES.bottleneckCostPerFailure);
+  const [bottleneckDistribution, setBottleneckDistribution] = useState(DEFAULT_VALUES.bottleneckDistribution);
 
   const [batchFailureRate, setBatchFailureRate] = useState(DEFAULT_VALUES.batchFailureRate);
   const [batchCostPerFailure, setBatchCostPerFailure] = useState(DEFAULT_VALUES.batchCostPerFailure);
+  const [batchDistribution, setBatchDistribution] = useState(DEFAULT_VALUES.batchDistribution);
+
+  // Distribution change handlers with auto-redistribution
+  const handleRegularDistributionChange = (newValue) => {
+    const difference = newValue - regularDistribution;
+    const adjustment = difference / 2;
+
+    const newBottleneck = Math.max(1, Math.min(98, bottleneckDistribution - adjustment));
+    const newBatch = Math.max(1, Math.min(98, batchDistribution - adjustment));
+
+    // Ensure total is 100%
+    const total = newValue + newBottleneck + newBatch;
+    if (Math.abs(total - 100) < 0.01) {
+      setRegularDistribution(newValue);
+      setBottleneckDistribution(newBottleneck);
+      setBatchDistribution(newBatch);
+    } else {
+      // Adjust to ensure exactly 100%
+      const finalBatch = 100 - newValue - newBottleneck;
+      if (finalBatch >= 1 && finalBatch <= 98) {
+        setRegularDistribution(newValue);
+        setBottleneckDistribution(newBottleneck);
+        setBatchDistribution(finalBatch);
+      }
+    }
+  };
+
+  const handleBottleneckDistributionChange = (newValue) => {
+    const difference = newValue - bottleneckDistribution;
+    const adjustment = difference / 2;
+
+    const newRegular = Math.max(1, Math.min(98, regularDistribution - adjustment));
+    const newBatch = Math.max(1, Math.min(98, batchDistribution - adjustment));
+
+    // Ensure total is 100%
+    const total = newRegular + newValue + newBatch;
+    if (Math.abs(total - 100) < 0.01) {
+      setRegularDistribution(newRegular);
+      setBottleneckDistribution(newValue);
+      setBatchDistribution(newBatch);
+    } else {
+      // Adjust to ensure exactly 100%
+      const finalBatch = 100 - newRegular - newValue;
+      if (finalBatch >= 1 && finalBatch <= 98) {
+        setRegularDistribution(newRegular);
+        setBottleneckDistribution(newValue);
+        setBatchDistribution(finalBatch);
+      }
+    }
+  };
+
+  const handleBatchDistributionChange = (newValue) => {
+    const difference = newValue - batchDistribution;
+    const adjustment = difference / 2;
+
+    const newRegular = Math.max(1, Math.min(98, regularDistribution - adjustment));
+    const newBottleneck = Math.max(1, Math.min(98, bottleneckDistribution - adjustment));
+
+    // Ensure total is 100%
+    const total = newRegular + newBottleneck + newValue;
+    if (Math.abs(total - 100) < 0.01) {
+      setRegularDistribution(newRegular);
+      setBottleneckDistribution(newBottleneck);
+      setBatchDistribution(newValue);
+    } else {
+      // Adjust to ensure exactly 100%
+      const finalBottleneck = 100 - newRegular - newValue;
+      if (finalBottleneck >= 1 && finalBottleneck <= 98) {
+        setRegularDistribution(newRegular);
+        setBottleneckDistribution(finalBottleneck);
+        setBatchDistribution(newValue);
+      }
+    }
+  };
 
   // Reset function
   const handleReset = () => {
@@ -284,20 +391,19 @@ const PredictiveMaintenanceROICalculator = () => {
     setDetectionPercentage(DEFAULT_VALUES.detectionPercentage);
     setRegularFailureRate(DEFAULT_VALUES.regularFailureRate);
     setRegularCostPerFailure(DEFAULT_VALUES.regularCostPerFailure);
+    setRegularDistribution(DEFAULT_VALUES.regularDistribution);
     setBottleneckFailureRate(DEFAULT_VALUES.bottleneckFailureRate);
     setBottleneckCostPerFailure(DEFAULT_VALUES.bottleneckCostPerFailure);
+    setBottleneckDistribution(DEFAULT_VALUES.bottleneckDistribution);
     setBatchFailureRate(DEFAULT_VALUES.batchFailureRate);
     setBatchCostPerFailure(DEFAULT_VALUES.batchCostPerFailure);
+    setBatchDistribution(DEFAULT_VALUES.batchDistribution);
   };
-
-  // Equipment distributions
-  const REGULAR_DIST = 0.60;
-  const BOTTLENECK_DIST = 0.20;
-  const BATCH_DIST = 0.20;
 
   // ROI calculations
   const calculations = useMemo(() => {
-    const calculateSegmentROI = (distribution, failureRate, costPerFailure) => {
+    const calculateSegmentROI = (distributionPercent, failureRate, costPerFailure) => {
+      const distribution = distributionPercent / 100; // Convert percentage to decimal
       const pumpsInSegment = totalPumps * distribution;
       const failedPumps = pumpsInSegment * (failureRate / 100);
       const totalCostPerFailure = failedPumps * costPerFailure;
@@ -317,16 +423,16 @@ const PredictiveMaintenanceROICalculator = () => {
       };
     };
 
-    const regular = calculateSegmentROI(REGULAR_DIST, regularFailureRate, regularCostPerFailure);
-    const bottleneck = calculateSegmentROI(BOTTLENECK_DIST, bottleneckFailureRate, bottleneckCostPerFailure);
-    const batch = calculateSegmentROI(BATCH_DIST, batchFailureRate, batchCostPerFailure);
+    const regular = calculateSegmentROI(regularDistribution, regularFailureRate, regularCostPerFailure);
+    const bottleneck = calculateSegmentROI(bottleneckDistribution, bottleneckFailureRate, bottleneckCostPerFailure);
+    const batch = calculateSegmentROI(batchDistribution, batchFailureRate, batchCostPerFailure);
 
     return {
       regular,
       bottleneck,
       batch
     };
-  }, [totalPumps, argosPricePerPump, detectionPercentage, regularFailureRate, regularCostPerFailure, bottleneckFailureRate, bottleneckCostPerFailure, batchFailureRate, batchCostPerFailure]);
+  }, [totalPumps, argosPricePerPump, detectionPercentage, regularDistribution, regularFailureRate, regularCostPerFailure, bottleneckDistribution, bottleneckFailureRate, bottleneckCostPerFailure, batchDistribution, batchFailureRate, batchCostPerFailure]);
 
   return (
     <div className="w-full h-screen bg-gray-100 flex" style={{ aspectRatio: '16/9' }}>
@@ -409,7 +515,9 @@ const PredictiveMaintenanceROICalculator = () => {
           <EquipmentCategory
             title="Regular Tools"
             color="#009DA5"
-            distribution={REGULAR_DIST}
+            distribution={regularDistribution / 100}
+            distributionPercentage={regularDistribution}
+            onDistributionChange={handleRegularDistributionChange}
             failureRateValue={regularFailureRate}
             onFailureRateChange={setRegularFailureRate}
             costPerFailureValue={regularCostPerFailure}
@@ -420,7 +528,9 @@ const PredictiveMaintenanceROICalculator = () => {
           <EquipmentCategory
             title="Bottleneck Tools"
             color="#CC0000"
-            distribution={BOTTLENECK_DIST}
+            distribution={bottleneckDistribution / 100}
+            distributionPercentage={bottleneckDistribution}
+            onDistributionChange={handleBottleneckDistributionChange}
             failureRateValue={bottleneckFailureRate}
             onFailureRateChange={setBottleneckFailureRate}
             costPerFailureValue={bottleneckCostPerFailure}
@@ -431,7 +541,9 @@ const PredictiveMaintenanceROICalculator = () => {
           <EquipmentCategory
             title="Batch Tools"
             color="#FF5800"
-            distribution={BATCH_DIST}
+            distribution={batchDistribution / 100}
+            distributionPercentage={batchDistribution}
+            onDistributionChange={handleBatchDistributionChange}
             failureRateValue={batchFailureRate}
             onFailureRateChange={setBatchFailureRate}
             costPerFailureValue={batchCostPerFailure}

@@ -421,6 +421,44 @@
           );
         };
 
+        // Compact Percentage Input for Equipment Distribution
+        const CompactPercentageInput = ({ value, onChange, min = 1, max = 98 }) => {
+          const handleChange = (e) => {
+            const numValue = parseFloat(e.target.value) || 0;
+            const clampedValue = Math.max(min, Math.min(max, numValue));
+            onChange(clampedValue);
+          };
+
+          return (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+              <input
+                type="number"
+                min={min}
+                max={max}
+                step={1}
+                value={value}
+                onChange={handleChange}
+                style={{
+                  width: '64px',
+                  padding: '4px 8px',
+                  border: '2px solid white',
+                  borderRadius: '4px',
+                  fontSize: '16px',
+                  fontWeight: 'bold',
+                  textAlign: 'center',
+                  backgroundColor: 'rgba(255, 255, 255, 0.3)',
+                  color: 'white',
+                  WebkitAppearance: 'none',
+                  MozAppearance: 'textfield'
+                }}
+                onFocus={(e) => e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.5)'}
+                onBlur={(e) => e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.3)'}
+              />
+              <span style={{ fontSize: '16px', fontWeight: '600', color: 'white' }}>% of pumps</span>
+            </div>
+          );
+        };
+
         const CompanyLogo = () => (
           <div className="logo-container">
             <div style={{ width: '128px', height: '128px', position: 'relative' }}>
@@ -456,6 +494,8 @@
           colorClass,
           borderClass,
           distribution,
+          distributionPercentage,
+          onDistributionChange,
           failureRateValue,
           onFailureRateChange,
           costPerFailureValue,
@@ -468,9 +508,10 @@
             <div className="equipment-column">
               <div className={`category-block ${colorClass}`}>
                 <h3 className="category-title">{title}</h3>
-                <div className="category-percentage">
-                  {Math.round(distribution * 100)}% of pumps
-                </div>
+                <CompactPercentageInput
+                  value={distributionPercentage}
+                  onChange={onDistributionChange}
+                />
               </div>
 
               <div className={`input-parameters-box ${borderClass}`}>
@@ -539,10 +580,13 @@
             detectionPercentage: 70,
             regularFailureRate: 8,
             regularCostPerFailure: 10000,
+            regularDistribution: 60,
             bottleneckFailureRate: 12,
             bottleneckCostPerFailure: 50000,
+            bottleneckDistribution: 20,
             batchFailureRate: 10,
-            batchCostPerFailure: 150000
+            batchCostPerFailure: 150000,
+            batchDistribution: 20
           };
 
           const [totalPumps, setTotalPumps] = useState(DEFAULT_VALUES.totalPumps);
@@ -551,12 +595,82 @@
 
           const [regularFailureRate, setRegularFailureRate] = useState(DEFAULT_VALUES.regularFailureRate);
           const [regularCostPerFailure, setRegularCostPerFailure] = useState(DEFAULT_VALUES.regularCostPerFailure);
+          const [regularDistribution, setRegularDistribution] = useState(DEFAULT_VALUES.regularDistribution);
 
           const [bottleneckFailureRate, setBottleneckFailureRate] = useState(DEFAULT_VALUES.bottleneckFailureRate);
           const [bottleneckCostPerFailure, setBottleneckCostPerFailure] = useState(DEFAULT_VALUES.bottleneckCostPerFailure);
+          const [bottleneckDistribution, setBottleneckDistribution] = useState(DEFAULT_VALUES.bottleneckDistribution);
 
           const [batchFailureRate, setBatchFailureRate] = useState(DEFAULT_VALUES.batchFailureRate);
           const [batchCostPerFailure, setBatchCostPerFailure] = useState(DEFAULT_VALUES.batchCostPerFailure);
+          const [batchDistribution, setBatchDistribution] = useState(DEFAULT_VALUES.batchDistribution);
+
+          // Distribution change handlers with auto-redistribution
+          const handleRegularDistributionChange = (newValue) => {
+            const difference = newValue - regularDistribution;
+            const adjustment = difference / 2;
+
+            const newBottleneck = Math.max(1, Math.min(98, bottleneckDistribution - adjustment));
+            const newBatch = Math.max(1, Math.min(98, batchDistribution - adjustment));
+
+            const total = newValue + newBottleneck + newBatch;
+            if (Math.abs(total - 100) < 0.01) {
+              setRegularDistribution(newValue);
+              setBottleneckDistribution(newBottleneck);
+              setBatchDistribution(newBatch);
+            } else {
+              const finalBatch = 100 - newValue - newBottleneck;
+              if (finalBatch >= 1 && finalBatch <= 98) {
+                setRegularDistribution(newValue);
+                setBottleneckDistribution(newBottleneck);
+                setBatchDistribution(finalBatch);
+              }
+            }
+          };
+
+          const handleBottleneckDistributionChange = (newValue) => {
+            const difference = newValue - bottleneckDistribution;
+            const adjustment = difference / 2;
+
+            const newRegular = Math.max(1, Math.min(98, regularDistribution - adjustment));
+            const newBatch = Math.max(1, Math.min(98, batchDistribution - adjustment));
+
+            const total = newRegular + newValue + newBatch;
+            if (Math.abs(total - 100) < 0.01) {
+              setRegularDistribution(newRegular);
+              setBottleneckDistribution(newValue);
+              setBatchDistribution(newBatch);
+            } else {
+              const finalBatch = 100 - newRegular - newValue;
+              if (finalBatch >= 1 && finalBatch <= 98) {
+                setRegularDistribution(newRegular);
+                setBottleneckDistribution(newValue);
+                setBatchDistribution(finalBatch);
+              }
+            }
+          };
+
+          const handleBatchDistributionChange = (newValue) => {
+            const difference = newValue - batchDistribution;
+            const adjustment = difference / 2;
+
+            const newRegular = Math.max(1, Math.min(98, regularDistribution - adjustment));
+            const newBottleneck = Math.max(1, Math.min(98, bottleneckDistribution - adjustment));
+
+            const total = newRegular + newBottleneck + newValue;
+            if (Math.abs(total - 100) < 0.01) {
+              setRegularDistribution(newRegular);
+              setBottleneckDistribution(newBottleneck);
+              setBatchDistribution(newValue);
+            } else {
+              const finalBottleneck = 100 - newRegular - newValue;
+              if (finalBottleneck >= 1 && finalBottleneck <= 98) {
+                setRegularDistribution(newRegular);
+                setBottleneckDistribution(finalBottleneck);
+                setBatchDistribution(newValue);
+              }
+            }
+          };
 
           // Reset function
           const handleReset = () => {
@@ -565,18 +679,18 @@
             setDetectionPercentage(DEFAULT_VALUES.detectionPercentage);
             setRegularFailureRate(DEFAULT_VALUES.regularFailureRate);
             setRegularCostPerFailure(DEFAULT_VALUES.regularCostPerFailure);
+            setRegularDistribution(DEFAULT_VALUES.regularDistribution);
             setBottleneckFailureRate(DEFAULT_VALUES.bottleneckFailureRate);
             setBottleneckCostPerFailure(DEFAULT_VALUES.bottleneckCostPerFailure);
+            setBottleneckDistribution(DEFAULT_VALUES.bottleneckDistribution);
             setBatchFailureRate(DEFAULT_VALUES.batchFailureRate);
             setBatchCostPerFailure(DEFAULT_VALUES.batchCostPerFailure);
+            setBatchDistribution(DEFAULT_VALUES.batchDistribution);
           };
 
-          const REGULAR_DIST = 0.60;
-          const BOTTLENECK_DIST = 0.20;
-          const BATCH_DIST = 0.20;
-
           const calculations = useMemo(() => {
-            const calculateSegmentROI = (distribution, failureRate, costPerFailure) => {
+            const calculateSegmentROI = (distributionPercent, failureRate, costPerFailure) => {
+              const distribution = distributionPercent / 100;
               const pumpsInSegment = totalPumps * distribution;
               const failedPumps = pumpsInSegment * (failureRate / 100);
               const totalCostPerFailure = failedPumps * costPerFailure;
@@ -596,12 +710,12 @@
               };
             };
 
-            const regular = calculateSegmentROI(REGULAR_DIST, regularFailureRate, regularCostPerFailure);
-            const bottleneck = calculateSegmentROI(BOTTLENECK_DIST, bottleneckFailureRate, bottleneckCostPerFailure);
-            const batch = calculateSegmentROI(BATCH_DIST, batchFailureRate, batchCostPerFailure);
+            const regular = calculateSegmentROI(regularDistribution, regularFailureRate, regularCostPerFailure);
+            const bottleneck = calculateSegmentROI(bottleneckDistribution, bottleneckFailureRate, bottleneckCostPerFailure);
+            const batch = calculateSegmentROI(batchDistribution, batchFailureRate, batchCostPerFailure);
 
             return { regular, bottleneck, batch };
-          }, [totalPumps, argosPricePerPump, detectionPercentage, regularFailureRate, regularCostPerFailure, bottleneckFailureRate, bottleneckCostPerFailure, batchFailureRate, batchCostPerFailure]);
+          }, [totalPumps, argosPricePerPump, detectionPercentage, regularDistribution, regularFailureRate, regularCostPerFailure, bottleneckDistribution, bottleneckFailureRate, bottleneckCostPerFailure, batchDistribution, batchFailureRate, batchCostPerFailure]);
 
           return (
             <div className="app-container">
@@ -669,7 +783,9 @@
                   title="Regular Tools"
                   colorClass="color-regular"
                   borderClass="border-regular"
-                  distribution={REGULAR_DIST}
+                  distribution={regularDistribution / 100}
+                  distributionPercentage={regularDistribution}
+                  onDistributionChange={handleRegularDistributionChange}
                   failureRateValue={regularFailureRate}
                   onFailureRateChange={setRegularFailureRate}
                   costPerFailureValue={regularCostPerFailure}
@@ -681,7 +797,9 @@
                   title="Bottleneck Tools"
                   colorClass="color-bottleneck"
                   borderClass="border-bottleneck"
-                  distribution={BOTTLENECK_DIST}
+                  distribution={bottleneckDistribution / 100}
+                  distributionPercentage={bottleneckDistribution}
+                  onDistributionChange={handleBottleneckDistributionChange}
                   failureRateValue={bottleneckFailureRate}
                   onFailureRateChange={setBottleneckFailureRate}
                   costPerFailureValue={bottleneckCostPerFailure}
@@ -693,7 +811,9 @@
                   title="Batch Tools"
                   colorClass="color-batch"
                   borderClass="border-batch"
-                  distribution={BATCH_DIST}
+                  distribution={batchDistribution / 100}
+                  distributionPercentage={batchDistribution}
+                  onDistributionChange={handleBatchDistributionChange}
                   failureRateValue={batchFailureRate}
                   onFailureRateChange={setBatchFailureRate}
                   costPerFailureValue={batchCostPerFailure}

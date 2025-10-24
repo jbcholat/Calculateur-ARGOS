@@ -6,9 +6,25 @@ Predictive Maintenance ROI Calculator for Busch Group Digital Services - ARGOS p
 
 This React component provides an interactive calculator for determining Return on Investment (ROI) for predictive maintenance solutions across different equipment categories.
 
-## Recent Changes - Version 8
+## Recent Changes - Version 9
 
-### Version 8 Updates (Latest)
+### Version 9 Updates (Latest)
+
+**Dynamic Equipment Distribution:**
+- Equipment distribution percentages are now **fully editable**
+- Change any category percentage (Regular Tools, Bottleneck Tools, Batch Tools)
+- Automatic redistribution maintains 100% total at all times
+- Redistribution algorithm: when you change one percentage, the difference is equally split between the other two categories
+
+**Examples:**
+- Regular Tools 60% → 50%: Bottleneck and Batch automatically adjust from 20% to 25% each
+- Bottleneck Tools 20% → 35%: Regular and Batch automatically adjust to 52.5% and 12.5%
+- Total always equals 100% (1% minimum, 98% maximum per category)
+
+**Reset Button Enhancement:**
+- Reset button now also restores default distribution percentages (60%/20%/20%)
+
+### Version 8 Updates
 
 **Default Values Updated:**
 - Regular Tools Cost per Failure: €5,000 → €10,000
@@ -46,25 +62,27 @@ This React component provides an interactive calculator for determining Return o
 
 ## Equipment Categories
 
-The calculator analyzes three equipment segments:
+The calculator analyzes three equipment segments with **editable distribution percentages**:
 
-1. **Regular Tools** (60% of pumps)
+1. **Regular Tools** (default: 60% of pumps - **editable**)
    - Color: Teal (#009DA5)
    - Default failure rate: 8%
    - Default cost per failure: €10,000
-   - Step increment: 1% (failure rate), €5,000 (cost)
+   - Step increment: 1% (distribution & failure rate), €5,000 (cost)
 
-2. **Bottleneck Tools** (20% of pumps)
+2. **Bottleneck Tools** (default: 20% of pumps - **editable**)
    - Color: Red (#CC0000)
    - Default failure rate: 12%
    - Default cost per failure: €50,000
-   - Step increment: 1% (failure rate), €5,000 (cost)
+   - Step increment: 1% (distribution & failure rate), €5,000 (cost)
 
-3. **Batch Tools** (20% of pumps)
+3. **Batch Tools** (default: 20% of pumps - **editable**)
    - Color: Orange (#FF5800)
    - Default failure rate: 10%
    - Default cost per failure: €150,000
-   - Step increment: 1% (failure rate), €5,000 (cost)
+   - Step increment: 1% (distribution & failure rate), €5,000 (cost)
+
+**Note:** Equipment distribution percentages can be customized to match your facility's actual equipment mix. The total always equals 100%.
 
 ## Global Parameters
 

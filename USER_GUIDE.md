@@ -96,10 +96,20 @@ At the bottom of the left panel, you'll find a **"Reset to Default Values"** but
 
 For each category (Regular Tools, Bottleneck Tools, Batch Tools):
 
-**Colored Block**: Displays equipment type and distribution
-- Regular Tools: 60% of pumps (teal/cyan) - Default cost per failure: €10,000
-- Bottleneck Tools: 20% of pumps (red) - Default cost per failure: €50,000
-- Batch Tools: 20% of pumps (orange) - Default cost per failure: €150,000
+**Colored Block**: Displays equipment type and **editable distribution percentage**
+- Regular Tools: Default 60% of pumps (teal/cyan) - Default cost per failure: €10,000
+- Bottleneck Tools: Default 20% of pumps (red) - Default cost per failure: €50,000
+- Batch Tools: Default 20% of pumps (orange) - Default cost per failure: €150,000
+
+**Editable Distribution Percentages** (NEW in Version 9):
+- Click on the percentage value in each colored block to edit
+- The percentage automatically adjusts the other two categories to maintain 100% total
+- Example: Change Regular Tools from 60% to 50%
+  - Bottleneck automatically adjusts from 20% to 25%
+  - Batch automatically adjusts from 20% to 25%
+  - Total remains 100%
+- Minimum: 1% per category, Maximum: 98% per category
+- Use this to match your facility's actual equipment distribution
 
 **Input Parameters**:
 - **Failure Rate**: Annual failure percentage (default varies by category)
@@ -210,22 +220,20 @@ For any questions or issues:
 
 ## Version
 
-**Current version**: 8.0
+**Current version**: 9.0
 **Last update**: October 2025
 
-**Version 8 Features**:
-- ✅ Updated default values to realistic industrial costs
-  - Regular Tools: €10,000 per failure
-  - Bottleneck Tools: €50,000 per failure
-  - Batch Tools: €150,000 per failure
-  - Argos Price: €2,500 per pump
-- ✅ Added practical step increments for all input fields
-  - Total Pumps: increment by 10
-  - Argos Price: increment by €100
-  - Failure Rate: increment by 1%
-  - Cost per Failure: increment by €5,000
-- ✅ Added Reset button for instant default value restoration
-- ✅ Removed company logo for cleaner interface
+**Version 9 Features**:
+- ✅ **Dynamic Equipment Distribution** - Major Enhancement!
+  - Equipment distribution percentages are now fully editable
+  - Click any percentage in the colored category blocks to change it
+  - Automatic redistribution maintains 100% total
+  - Customize to match your facility's actual equipment mix
+  - Example: Change Regular Tools from 60% to 50%, others auto-adjust to 25% each
+- ✅ Enhanced Reset button - also restores distribution percentages
+- ✅ Validation: 1% minimum, 98% maximum per category
+- ✅ Real-time calculation updates when distribution changes
+- ✅ All features from Version 8 (realistic costs, step increments, reset button)
 - ✅ All features from Version 7 (focus fix, annual cost analysis, English interface)
 
 ---
