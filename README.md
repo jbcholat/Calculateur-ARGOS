@@ -6,36 +6,43 @@ Predictive Maintenance ROI Calculator for Busch Group Digital Services - ARGOS p
 
 This React component provides an interactive calculator for determining Return on Investment (ROI) for predictive maintenance solutions across different equipment categories.
 
-## Recent Changes - Version 7
+## Recent Changes - Version 8
 
-### 1. Fixed Critical Input Field Focus Bug
-**Issue**: Input fields were losing focus after each keystroke, preventing users from typing consecutive digits.
+### Version 8 Updates (Latest)
 
-**Solution**: Moved `TextInputComponent` and `CompactTextInput` component definitions outside the main component function. When components are defined inside another component, React treats them as new component types on each render, causing unmount/remount cycles that lose focus.
+**Default Values Updated:**
+- Regular Tools Cost per Failure: €5,000 → €10,000
+- Bottleneck Tools Cost per Failure: €25,000 → €50,000
+- Batch Tools Cost per Failure: €15,000 → €150,000
+- Argos Price per Pump: €500 → €2,500
 
-**Location**: `src/components/PredictiveMaintenanceROICalculator.jsx:6-56`
+**Input Step Increments Added:**
+- Total Number of Pumps: `step="10"` (practical increments for typical installations)
+- Argos Price per Pump: `step="100"` (fast pricing adjustments)
+- Failure Rate: `step="1"` (precise percentage control)
+- Cost per Failure: `step="5000"` (realistic cost increments)
 
-### 2. Added Annual Cost Analysis Box
-**New Feature**: Added a detailed cost breakdown section between input parameters and ROI display.
+**UI Improvements:**
+- Added **Reset Button** at bottom of left panel - one-click restoration of all default values
+- Removed company logo for cleaner, more focused interface
+- Logo code commented out for easy restoration if needed
 
-**Information Displayed**:
-- Annual Failure Cost: Total cost of failures per year for the equipment segment
-- Annual Service Cost: Total Argos service cost for the equipment segment
-- Savings from Detection: Annual savings achieved through predictive maintenance
-- Net Annual Value: Net benefit (savings minus service cost), color-coded green/red
+### Version 7 Features (Foundation)
 
-**Location**: `src/components/PredictiveMaintenanceROICalculator.jsx:193-217`
+**1. Fixed Critical Input Field Focus Bug**
+- Moved component definitions outside main component to prevent focus loss
+- Users can now type consecutive digits without repeated clicking
 
-### 3. Rebalanced Vertical Spacing
-**Issue**: Category blocks were occupying ~66% of vertical space, creating poor visual balance.
+**2. Added Annual Cost Analysis Box**
+- Detailed cost breakdown between input parameters and ROI display
+- Shows: Annual Failure Cost, Annual Service Cost, Savings from Detection, Net Annual Value
+- Color-coded Net Annual Value (green/red)
 
-**Solution**: Implemented flex-based proportional sizing:
-- Category block (colored): `flex: 4` (~40% of space) - **REDUCED**
+**3. Rebalanced Vertical Spacing**
+- Category block: `flex: 4` (~40% of space)
 - Input parameters: `flex: 2` (~20% of space)
-- Annual Cost Analysis: `flex: 2` (~20% of space) - **NEW**
+- Annual Cost Analysis: `flex: 2` (~20% of space)
 - ROI display: `flex: 2` (~20% of space)
-
-**Location**: `src/components/PredictiveMaintenanceROICalculator.jsx:166-221`
 
 ## Equipment Categories
 
@@ -44,23 +51,26 @@ The calculator analyzes three equipment segments:
 1. **Regular Tools** (60% of pumps)
    - Color: Teal (#009DA5)
    - Default failure rate: 8%
-   - Default cost per failure: €5,000
+   - Default cost per failure: €10,000
+   - Step increment: 1% (failure rate), €5,000 (cost)
 
 2. **Bottleneck Tools** (20% of pumps)
    - Color: Red (#CC0000)
    - Default failure rate: 12%
-   - Default cost per failure: €25,000
+   - Default cost per failure: €50,000
+   - Step increment: 1% (failure rate), €5,000 (cost)
 
 3. **Batch Tools** (20% of pumps)
    - Color: Orange (#FF5800)
    - Default failure rate: 10%
-   - Default cost per failure: €15,000
+   - Default cost per failure: €150,000
+   - Step increment: 1% (failure rate), €5,000 (cost)
 
 ## Global Parameters
 
-- **Total Number of Pumps**: Total pump count across all segments
-- **Argos Price per Pump**: Annual service cost per pump (€)
-- **Detection Percentage**: Percentage of failures prevented through predictive maintenance (%)
+- **Total Number of Pumps**: Total pump count across all segments (default: 1,000, step: 10)
+- **Argos Price per Pump**: Annual service cost per pump (default: €2,500, step: €100)
+- **Detection Percentage**: Percentage of failures prevented through predictive maintenance (default: 70%, step: 1%)
 
 ## ROI Color Coding
 
@@ -135,7 +145,7 @@ function App() {
 │    • Price/Pump       │  │ 40%  │ 40%  │ 40%  │ Cat    │
 │    • Detection %      │  │      │      │      │        │
 │  - ROI Legend         │  ├──────┼──────┼──────┤        │
-│  - Company Logo       │  │ 20%  │ 20%  │ 20%  │ Input  │
+│  - Reset Button       │  │ 20%  │ 20%  │ 20%  │ Input  │
 │                       │  ├──────┼──────┼──────┤        │
 │                       │  │ 20%  │ 20%  │ 20%  │ Cost   │
 │                       │  ├──────┼──────┼──────┤        │

@@ -78,33 +78,47 @@ The script will automatically create `index-fully-offline.html` with all embedde
 
 ### Left Panel - Global Parameters
 
-1. **Total Number of Pumps**: Enter the total number of pumps on site
-2. **Argos Price per Pump**: Annual cost of Argos service per pump (€)
-3. **Detection Percentage**: Failure detection efficiency (typically 70%)
+1. **Total Number of Pumps**: Enter the total number of pumps on site (default: 1,000)
+   - Use arrow buttons to increment by 10
+2. **Argos Price per Pump**: Annual cost of Argos service per pump (default: €2,500)
+   - Use arrow buttons to increment by €100
+3. **Detection Percentage**: Failure detection efficiency (default: 70%)
+   - Use arrow buttons to increment by 1%
+
+### Reset Button
+
+At the bottom of the left panel, you'll find a **"Reset to Default Values"** button:
+- Click to instantly restore all fields to their original default values
+- Useful after exploring different scenarios during client presentations
+- Saves time versus manually resetting each field
 
 ### Right Columns - Equipment Categories
 
 For each category (Regular Tools, Bottleneck Tools, Batch Tools):
 
 **Colored Block**: Displays equipment type and distribution
-- Regular Tools: 60% of pumps (teal/cyan)
-- Bottleneck Tools: 20% of pumps (red)
-- Batch Tools: 20% of pumps (orange)
+- Regular Tools: 60% of pumps (teal/cyan) - Default cost per failure: €10,000
+- Bottleneck Tools: 20% of pumps (red) - Default cost per failure: €50,000
+- Batch Tools: 20% of pumps (orange) - Default cost per failure: €150,000
 
 **Input Parameters**:
-- **Failure Rate**: Annual failure percentage (%)
+- **Failure Rate**: Annual failure percentage (default varies by category)
+  - Use arrow buttons to increment by 1% for precise control
+  - Regular Tools: 8%, Bottleneck: 12%, Batch: 10%
 - **Cost per Failure**: Average cost of a failure (€)
+  - Use arrow buttons to increment by €5,000
+  - Reflects the realistic cost increments for industrial equipment
 
-**Annual Cost Analysis** (NEW):
+**Annual Cost Analysis**:
 - **Annual Failure Cost**: Total failure costs per year
 - **Annual Service Cost**: Total Argos service cost
 - **Savings from Detection**: Savings through predictive maintenance
 - **Net Annual Value**: Net benefit (green if positive, red if negative)
 
 **ROI**: Return on investment with color coding
-- 🔴 Red: Negative ROI
-- 🟠 Orange: Low ROI (0-15%)
-- 🟢 Green: High ROI (>15%)
+- 🔴 Red: Negative ROI (not profitable)
+- 🟠 Orange: Low ROI (0-15% - marginally profitable)
+- 🟢 Green: High ROI (>15% - highly profitable)
 
 ---
 
@@ -167,7 +181,7 @@ The calculator is optimized for landscape (horizontal) display.
 - Clear browser cache and retry
 
 ### Input fields lose focus
-- This bug has been fixed in version 7
+- This bug has been fixed in version 8
 - If the problem persists, reload the page
 
 ### Display too small on tablet
@@ -196,16 +210,23 @@ For any questions or issues:
 
 ## Version
 
-**Current version**: 7.0
+**Current version**: 8.0
 **Last update**: October 2025
 
-**Version 7 Features**:
-- ✅ Fixed input field focus loss bug
-- ✅ Added detailed annual cost analysis
-- ✅ Rebalanced vertical spacing
-- ✅ English interface
-- ✅ Offline mode after first use
-- ✅ 100% offline version available
+**Version 8 Features**:
+- ✅ Updated default values to realistic industrial costs
+  - Regular Tools: €10,000 per failure
+  - Bottleneck Tools: €50,000 per failure
+  - Batch Tools: €150,000 per failure
+  - Argos Price: €2,500 per pump
+- ✅ Added practical step increments for all input fields
+  - Total Pumps: increment by 10
+  - Argos Price: increment by €100
+  - Failure Rate: increment by 1%
+  - Cost per Failure: increment by €5,000
+- ✅ Added Reset button for instant default value restoration
+- ✅ Removed company logo for cleaner interface
+- ✅ All features from Version 7 (focus fix, annual cost analysis, English interface)
 
 ---
 
